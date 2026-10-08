@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Agonas GitAssign</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <!-- ══════════════ HEADER ══════════════ -->
+  <header class="header">
+    <div class="header-brand">
+      <span class="brand-icon">⚡</span>
+      <span class="brand-name">Agonas</span>
+      <span class="brand-sub">GitAssign</span>
+    </div>
+    <div class="header-actions">
+      <div class="auth-dot" id="authDot" title="Not authenticated"></div>
+      <img class="user-avatar" id="userAvatar" alt="You" width="24" height="24" style="display:none" />
+      <button class="icon-btn" id="settingsBtn" title="Settings" aria-label="Open settings">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0Zm0 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM8 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Z"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ══════════════ ISSUE BANNER ══════════════ -->
+  <div class="issue-banner" id="issueBanner" style="display:none">
+    <span class="issue-badge" id="issueBadge"></span>
+    <a class="issue-link" id="issueLink" target="_blank" rel="noopener noreferrer">↗</a>
+  </div>
+
+  <!-- ══════════════ MAIN CONTENT ══════════════ -->
+  <main id="main">
+
+    <!-- Setup prompt (shown when no credentials) -->
+    <div class="setup-prompt" id="setupPrompt" style="display:none">
+      <div class="setup-icon">🔑</div>
+      <p class="setup-title">Setup required</p>
+      <p class="setup-desc">Add your GitHub PAT and Gemini API key to start triaging.</p>
+      <button class="btn-primary" id="openSettingsBtn">Open Settings</button>
+    </div>
+
+    <!-- Not on issue page notice -->
+    <div class="setup-prompt" id="notIssuePrompt" style="display:none">
+      <div class="setup-icon">📋</div>
+      <p class="setup-title">Open a GitHub issue</p>
+      <p class="setup-desc">Navigate to any GitHub issue page, then click this popup to triage candidates.</p>
+    </div>
+
+    <!-- Loading skeleton -->
+    <div id="loadingState" style="display:none">
+      <div class="loading-header">
+        <div class="skeleton skeleton-badge"></div>
+      </div>
+      <div class="skeleton-card">
+        <div class="skeleton skeleton-line" style="width:60%"></div>
+        <div class="skeleton skeleton-bar"></div>
+        <div class="skeleton skeleton-line" style="width:80%"></div>
+        <div class="skeleton skeleton-line" style="width:45%"></div>
+      </div>
+      <div class="skeleton-card">
+        <div class="skeleton skeleton-line" style="width:50%"></div>
+        <div class="skeleton skeleton-bar"></div>
+        <div class="skeleton skeleton-line" style="width:70%"></div>
+      </div>
+      <p class="loading-label" id="loadingLabel">Fetching issue context…</p>
+    </div>
+
+    <!-- Error state -->
+    <div class="error-state" id="errorState" style="display:none">
+      <div class="error-icon">⚠️</div>
+      <p class="error-msg" id="errorMsg"></p>
+      <button class="btn-secondary" id="retryBtn">Retry</button>
+    </div>
+
+    <!-- No candidates state -->
+    <div class="setup-prompt" id="noCandidatesState" style="display:none">
+      <div class="setup-icon">🔍</div>
+      <p class="setup-title">No candidates found</p>
+      <p class="setup-desc" id="noCandidatesDesc">No "assign me" style comments detected on this issue yet.</p>
+    </div>
+
+    <!-- Candidates list -->
+    <div id="candidatesContainer" style="display:none">
+      <div id="candidatesList"></div>
+    </div>
+
+  </main>
+
+  <!-- ══════════════ FOOTER ══════════════ -->
+  <footer class="footer" id="footer" style="display:none">
+    <span class="footer-text">Scores via <span class="footer-accent">Gemma 4</span> · <a href="https://agentskills.io" target="_blank" rel="noopener" class="footer-link">agentskills.io</a></span>
+    <button class="icon-btn" id="refreshBtn" title="Re-run triage" aria-label="Refresh scores">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+        <path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+        <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+      </svg>
+    </button>
+  </footer>
+
+  <!-- ══════════════ TOAST ══════════════ -->
+  <div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Agonas Scorer Test Suite</title>
+  <style>
+    body { background: #0d1117; color: #e6edf3; font-family: system-ui, sans-serif; padding: 30px; }
+    h1 { color: #58a6ff; font-size: 20px; margin-bottom: 20px; }
+    .pass { color: #3fb950; margin: 6px 0; }
+    .fail { color: #f85149; margin: 6px 0; }
+    .summary { margin-top: 20px; font-weight: bold; border-top: 1px solid #30363d; padding-top: 12px; }
+  </style>
+</head>
+<body>
+  <h1>⚡ Agonas JS Scoring Test Suite</h1>
+  <div id="results">Running tests…</div>
+
+  <script type="module">
+    import { runTests } from "./test_scorer.js";
+
+    async function start() {
+      const el = document.getElementById("results");
+      try {
+        const res = await fetch("./test-vectors.json");
+        const vectors = await res.json();
+        const summary = runTests(vectors);
+
+        el.innerHTML = "";
+        for (const r of summary.results) {
+          const div = document.createElement("div");
+          div.className = r.status === "PASS" ? "pass" : "fail";
+          div.textContent = (r.status === "PASS" ? "✓ " : "✗ ") + r.name + (r.errors ? " - " + r.errors.join(", ") : "");
+          el.appendChild(div);
+        }
+
+        const sumDiv = document.createElement("div");
+        sumDiv.className = "summary";
+        sumDiv.textContent = `Completed: ${summary.passed}/${summary.total} passed (${summary.failed} failed).`;
+        el.appendChild(sumDiv);
+      } catch (err) {
+        el.textContent = "Error running tests: " + err.message;
+      }
+    }
+    start();
+  </script>
+</body>
+</html>

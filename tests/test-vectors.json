@@ -1,0 +1,215 @@
+[
+  {
+    "name": "ideal_first_timer_on_starter",
+    "tier": "starter",
+    "metrics": {
+      "global_open_assigned": 0,
+      "repo_open_assigned": 0,
+      "lifetime_merged_prs": 0
+    },
+    "comment_quality": 10,
+    "domain_alignment": 10,
+    "expected": {
+      "score": 10,
+      "risk": "Low",
+      "flags": [
+        "First-timer boost +2.0"
+      ],
+      "breakdown": {
+        "comment_quality": 10,
+        "global_burden_pts": 10,
+        "repo_monopoly_pts": 10,
+        "domain_alignment": 10,
+        "first_timer_adjustment": 2.0,
+        "hard_cap_applied": false
+      },
+      "stats": {
+        "global_open_assigned": 0,
+        "repo_open_assigned": 0,
+        "lifetime_merged_prs": 0
+      }
+    }
+  },
+  {
+    "name": "hoarder_high_ghosting_risk",
+    "tier": "intermediate",
+    "metrics": {
+      "global_open_assigned": 5,
+      "repo_open_assigned": 0,
+      "lifetime_merged_prs": 20
+    },
+    "comment_quality": 9,
+    "domain_alignment": 9,
+    "expected": {
+      "score": 7.1,
+      "risk": "High",
+      "flags": [
+        "High ghosting risk"
+      ],
+      "breakdown": {
+        "comment_quality": 9.0,
+        "global_burden_pts": 0,
+        "repo_monopoly_pts": 10,
+        "domain_alignment": 9.0,
+        "first_timer_adjustment": 0.0,
+        "hard_cap_applied": false
+      },
+      "stats": {
+        "global_open_assigned": 5,
+        "repo_open_assigned": 0,
+        "lifetime_merged_prs": 20
+      }
+    }
+  },
+  {
+    "name": "monopoly_hard_cap",
+    "tier": "intermediate",
+    "metrics": {
+      "global_open_assigned": 1,
+      "repo_open_assigned": 3,
+      "lifetime_merged_prs": 50
+    },
+    "comment_quality": 10,
+    "domain_alignment": 10,
+    "expected": {
+      "score": 4.0,
+      "risk": "High",
+      "flags": [
+        "Same-repo monopoly cap (max 4.0)"
+      ],
+      "breakdown": {
+        "comment_quality": 10,
+        "global_burden_pts": 7,
+        "repo_monopoly_pts": 0,
+        "domain_alignment": 10,
+        "first_timer_adjustment": 0.0,
+        "hard_cap_applied": true
+      },
+      "stats": {
+        "global_open_assigned": 1,
+        "repo_open_assigned": 3,
+        "lifetime_merged_prs": 50
+      }
+    }
+  },
+  {
+    "name": "veteran_on_starter",
+    "tier": "starter",
+    "metrics": {
+      "global_open_assigned": 0,
+      "repo_open_assigned": 0,
+      "lifetime_merged_prs": 15
+    },
+    "comment_quality": 8,
+    "domain_alignment": 8,
+    "expected": {
+      "score": 6.9,
+      "risk": "Low",
+      "flags": [
+        "Experienced contributor on starter issue -2.0"
+      ],
+      "breakdown": {
+        "comment_quality": 8.0,
+        "global_burden_pts": 10,
+        "repo_monopoly_pts": 10,
+        "domain_alignment": 8.0,
+        "first_timer_adjustment": -2.0,
+        "hard_cap_applied": false
+      },
+      "stats": {
+        "global_open_assigned": 0,
+        "repo_open_assigned": 0,
+        "lifetime_merged_prs": 15
+      }
+    }
+  },
+  {
+    "name": "medium_risk_moderate_workload",
+    "tier": "intermediate",
+    "metrics": {
+      "global_open_assigned": 3,
+      "repo_open_assigned": 2,
+      "lifetime_merged_prs": 5
+    },
+    "comment_quality": 6,
+    "domain_alignment": 7,
+    "expected": {
+      "score": 4.5,
+      "risk": "Medium",
+      "flags": [],
+      "breakdown": {
+        "comment_quality": 6.0,
+        "global_burden_pts": 3,
+        "repo_monopoly_pts": 2,
+        "domain_alignment": 7.0,
+        "first_timer_adjustment": 0.0,
+        "hard_cap_applied": false
+      },
+      "stats": {
+        "global_open_assigned": 3,
+        "repo_open_assigned": 2,
+        "lifetime_merged_prs": 5
+      }
+    }
+  },
+  {
+    "name": "clamp_extreme_inputs",
+    "tier": "advanced",
+    "metrics": {
+      "global_open_assigned": 10,
+      "repo_open_assigned": 4,
+      "lifetime_merged_prs": 0
+    },
+    "comment_quality": 99,
+    "domain_alignment": -5,
+    "expected": {
+      "score": 3.5,
+      "risk": "High",
+      "flags": [
+        "High ghosting risk"
+      ],
+      "breakdown": {
+        "comment_quality": 10,
+        "global_burden_pts": 0,
+        "repo_monopoly_pts": 0,
+        "domain_alignment": 0,
+        "first_timer_adjustment": 0.0,
+        "hard_cap_applied": false
+      },
+      "stats": {
+        "global_open_assigned": 10,
+        "repo_open_assigned": 4,
+        "lifetime_merged_prs": 0
+      }
+    }
+  },
+  {
+    "name": "low_intent_zero_scores",
+    "tier": "intermediate",
+    "metrics": {
+      "global_open_assigned": 0,
+      "repo_open_assigned": 0,
+      "lifetime_merged_prs": 1
+    },
+    "comment_quality": 0,
+    "domain_alignment": 0,
+    "expected": {
+      "score": 4.7,
+      "risk": "Low",
+      "flags": [],
+      "breakdown": {
+        "comment_quality": 0,
+        "global_burden_pts": 10,
+        "repo_monopoly_pts": 10,
+        "domain_alignment": 0,
+        "first_timer_adjustment": 0.0,
+        "hard_cap_applied": false
+      },
+      "stats": {
+        "global_open_assigned": 0,
+        "repo_open_assigned": 0,
+        "lifetime_merged_prs": 1
+      }
+    }
+  }
+]

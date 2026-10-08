@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Agonas GitAssign — Settings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0d1117; --card: #161b22; --line: #30363d;
+      --fg: #e6edf3; --mute: #8b949e; --acc: #58a6ff;
+      --ok: #3fb950; --bad: #f85149; --btn-green: #238636;
+      --btn-green-hover: #2ea043;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg); color: var(--fg);
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 14px; line-height: 1.5;
+      min-height: 100vh; padding: 32px 0;
+    }
+    .container { max-width: 540px; margin: 0 auto; padding: 0 20px; }
+    .header {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 28px;
+    }
+    .brand-icon { font-size: 24px; }
+    .brand-name { font-size: 20px; font-weight: 700; color: var(--acc); }
+    .brand-sub  { font-size: 13px; color: var(--mute); margin-left: 2px; }
+
+    .section {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: 8px; padding: 20px; margin-bottom: 16px;
+    }
+    .section-title {
+      font-size: 13px; font-weight: 700; color: var(--mute);
+      text-transform: uppercase; letter-spacing: 0.5px;
+      margin-bottom: 16px;
+    }
+    .field { margin-bottom: 16px; }
+    .field:last-child { margin-bottom: 0; }
+
+    label {
+      display: block; font-size: 13px; font-weight: 600;
+      color: var(--fg); margin-bottom: 5px;
+    }
+    .label-hint { font-weight: 400; color: var(--mute); font-size: 12px; }
+
+    .input-wrap { position: relative; }
+    input[type="password"], input[type="text"] {
+      width: 100%; background: var(--bg); border: 1px solid var(--line);
+      border-radius: 6px; color: var(--fg); font-size: 13px;
+      font-family: 'Inter', monospace; padding: 8px 36px 8px 10px;
+      outline: none; transition: border-color 0.15s;
+    }
+    input:focus { border-color: var(--acc); }
+
+    .toggle-vis {
+      position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; color: var(--mute); cursor: pointer;
+      font-size: 14px; padding: 2px;
+    }
+    .toggle-vis:hover { color: var(--fg); }
+
+    .field-desc {
+      font-size: 11px; color: var(--mute); margin-top: 5px;
+    }
+    .field-desc a { color: var(--acc); }
+
+    /* Toggle switch */
+    .toggle-row {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .toggle-row:last-child { margin-bottom: 0; }
+
+    .toggle-label { font-size: 13px; font-weight: 500; }
+    .toggle-hint  { font-size: 11px; color: var(--mute); margin-top: 2px; }
+
+    .switch { position: relative; width: 36px; height: 20px; flex-shrink: 0; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute; inset: 0; background: var(--line);
+      border-radius: 20px; cursor: pointer; transition: background 0.2s;
+    }
+    .slider::before {
+      content: ""; position: absolute;
+      width: 14px; height: 14px; left: 3px; top: 3px;
+      background: var(--fg); border-radius: 50%; transition: transform 0.2s;
+    }
+    .switch input:checked + .slider { background: var(--btn-green); }
+    .switch input:checked + .slider::before { transform: translateX(16px); }
+
+    /* Buttons */
+    .actions { display: flex; gap: 10px; margin-top: 20px; }
+    .btn-save {
+      background: var(--btn-green); color: #fff; border: none;
+      border-radius: 6px; padding: 8px 20px; font-size: 13px;
+      font-weight: 600; cursor: pointer; transition: background 0.15s;
+    }
+    .btn-save:hover { background: var(--btn-green-hover); }
+    .btn-test {
+      background: none; color: var(--fg); border: 1px solid var(--line);
+      border-radius: 6px; padding: 8px 16px; font-size: 13px;
+      font-weight: 500; cursor: pointer; transition: border-color 0.15s;
+    }
+    .btn-test:hover { border-color: var(--acc); color: var(--acc); }
+
+    /* Status banner */
+    .status-banner {
+      padding: 10px 14px; border-radius: 6px; font-size: 12px;
+      font-weight: 600; margin-top: 14px; display: none;
+    }
+    .status-banner.ok  { background: rgba(63,185,80,0.12); color: var(--ok); border: 1px solid rgba(63,185,80,0.3); }
+    .status-banner.err { background: rgba(248,81,73,0.12); color: var(--bad); border: 1px solid rgba(248,81,73,0.3); }
+
+    .version-note {
+      text-align: center; font-size: 11px; color: var(--mute); margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <span class="brand-icon">⚡</span>
+      <span class="brand-name">Agonas</span>
+      <span class="brand-sub">GitAssign · Settings</span>
+    </div>
+
+    <!-- Credentials -->
+    <div class="section">
+      <div class="section-title">🔑 Credentials</div>
+
+      <div class="field">
+        <label for="githubToken">GitHub Personal Access Token <span class="label-hint">(required)</span></label>
+        <div class="input-wrap">
+          <input type="password" id="githubToken" placeholder="ghp_…" autocomplete="off" spellcheck="false" />
+          <button class="toggle-vis" data-target="githubToken" title="Show / hide">👁</button>
+        </div>
+        <div class="field-desc">
+          Needs <code>repo</code> scope (or fine-grained Issues R/W + Metadata R).
+          <a href="https://github.com/settings/tokens/new?scopes=repo&description=Agonas+GitAssign" target="_blank" rel="noopener">Generate →</a>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="geminiApiKey">Gemini API Key <span class="label-hint">(optional — enables Gemma scoring)</span></label>
+        <div class="input-wrap">
+          <input type="password" id="geminiApiKey" placeholder="AIza…" autocomplete="off" spellcheck="false" />
+          <button class="toggle-vis" data-target="geminiApiKey" title="Show / hide">👁</button>
+        </div>
+        <div class="field-desc">
+          Used to call <strong>Gemma 4</strong> for comment quality &amp; domain alignment scoring.
+          Without it, heuristic scoring is used.
+          <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener">Get key →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Behaviour -->
+    <div class="section">
+      <div class="section-title">⚙ Behaviour</div>
+
+      <div class="toggle-row">
+        <div>
+          <div class="toggle-label">Auto-triage on open</div>
+          <div class="toggle-hint">Automatically run triage when you open the popup on an issue page</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="autoTriage" checked />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="toggle-row">
+        <div>
+          <div class="toggle-label">Show ⚡ Triage button on issue pages</div>
+          <div class="toggle-hint">Injects a button into the GitHub issue header for quick access</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="injectButton" checked />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="toggle-row">
+        <div>
+          <div class="toggle-label">Use heuristic fallback</div>
+          <div class="toggle-hint">When Gemma is unavailable, score via keyword analysis instead of failing</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="heuristicFallback" checked />
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn-save" id="saveBtn">Save Settings</button>
+      <button class="btn-test" id="testBtn">Test Connection</button>
+    </div>
+
+    <div class="version-note">
+      Agonas GitAssign v1.0.1 · 
+      <a href="https://github.com/Rehodra/Agonas" target="_blank" rel="noopener" style="color:var(--mute)">GitHub</a> · 
+      <a href="../PRIVACY.md" target="_blank" rel="noopener" style="color:var(--mute)">Privacy Policy</a>
+    </div>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>
