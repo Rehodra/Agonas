@@ -65,6 +65,12 @@
     btn.addEventListener("mouseleave", () => { btn.style.background = "#161b22"; });
 
     btn.addEventListener("click", () => {
+      chrome.storage.local?.set?.({
+        agonas_active_issue: {
+          ...issue,
+          timestamp: Date.now(),
+        },
+      });
       chrome.storage.session?.set?.({ agLastIssue: issue });
       btn.style.color = "#3fb950";
       btn.textContent = "⚡ Click extension icon in toolbar";

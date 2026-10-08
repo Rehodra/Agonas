@@ -20,6 +20,11 @@
     <div class="header-actions">
       <div class="auth-dot" id="authDot" title="Not authenticated"></div>
       <img class="user-avatar" id="userAvatar" alt="You" width="24" height="24" style="display:none" />
+      <button class="icon-btn" id="popoutBtn" title="Open in persistent detached window" aria-label="Pop out">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M1.5 1a.5.5 0 0 0-.5.5v13a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5V9a.5.5 0 0 0-1 0v5H2V2h5a.5.5 0 0 0 0-1H1.5zM10 .5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-1 0V1.707L9.854 6.854a.5.5 0 0 1-.708-.708L14.293 1H10.5A.5.5 0 0 1 10 .5z"/>
+        </svg>
+      </button>
       <button class="icon-btn" id="settingsBtn" title="Settings" aria-label="Open settings">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
           <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0Zm0 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM8 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Z"/>
@@ -27,6 +32,12 @@
       </button>
     </div>
   </header>
+
+  <!-- ══════════════ TAB SWITCHER BANNER ══════════════ -->
+  <div class="tab-switcher-banner" id="tabSwitcherBanner" style="display:none">
+    <span class="tab-switcher-text" id="tabSwitcherText">Current tab: repo#123</span>
+    <button class="btn-triage-tab" id="triageTabBtn">Triage Tab ⚡</button>
+  </div>
 
   <!-- ══════════════ ISSUE BANNER ══════════════ -->
   <div class="issue-banner" id="issueBanner" style="display:none">
@@ -52,7 +63,7 @@
       <p class="setup-desc">Navigate to any GitHub issue page, then click this popup to triage candidates.</p>
     </div>
 
-    <!-- Loading skeleton -->
+    <!-- Loading skeleton & progress with Cancel -->
     <div id="loadingState" style="display:none">
       <div class="loading-header">
         <div class="skeleton skeleton-badge"></div>
@@ -68,7 +79,10 @@
         <div class="skeleton skeleton-bar"></div>
         <div class="skeleton skeleton-line" style="width:70%"></div>
       </div>
-      <p class="loading-label" id="loadingLabel">Fetching issue context…</p>
+      <div class="loading-progress-row">
+        <p class="loading-label" id="loadingLabel">Reading comments…</p>
+        <button class="btn-cancel" id="cancelLoadingBtn" title="Cancel request">Cancel</button>
+      </div>
     </div>
 
     <!-- Error state -->
@@ -82,7 +96,14 @@
     <div class="setup-prompt" id="noCandidatesState" style="display:none">
       <div class="setup-icon">🔍</div>
       <p class="setup-title">No candidates found</p>
-      <p class="setup-desc" id="noCandidatesDesc">No "assign me" style comments detected on this issue yet.</p>
+      <p class="setup-desc" id="noCandidatesDesc">No comments found on this issue yet.</p>
+    </div>
+
+    <!-- Background Gemma Progress Banner (shown while cards are already rendered) -->
+    <div class="gemma-progress-bar" id="gemmaProgressBar" style="display:none">
+      <span class="spinner-inline"></span>
+      <span class="gemma-progress-label" id="gemmaProgressLabel">Asking Gemma…</span>
+      <button class="btn-cancel-sm" id="cancelGemmaBtn" title="Keep preliminary scores">Cancel</button>
     </div>
 
     <!-- Candidates list -->
@@ -94,13 +115,16 @@
 
   <!-- ══════════════ FOOTER ══════════════ -->
   <footer class="footer" id="footer" style="display:none">
-    <span class="footer-text">Scores via <span class="footer-accent">Gemma 4</span> · <a href="https://agentskills.io" target="_blank" rel="noopener" class="footer-link">agentskills.io</a></span>
-    <button class="icon-btn" id="refreshBtn" title="Re-run triage" aria-label="Refresh scores">
-      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
-        <path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
-        <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
-      </svg>
-    </button>
+    <span class="footer-text">Scores via <span class="footer-accent" id="footerEngine">Gemma 4</span></span>
+    <div class="footer-actions">
+      <button class="btn-rerun-gemma" id="rerunGemmaBtn" title="Re-run Gemma (bypass cache)">Re-run Gemma</button>
+      <button class="icon-btn" id="refreshBtn" title="Re-run entire triage" aria-label="Refresh scores">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+          <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+        </svg>
+      </button>
+    </div>
   </footer>
 
   <!-- ══════════════ TOAST ══════════════ -->

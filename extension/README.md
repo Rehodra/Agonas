@@ -9,6 +9,8 @@ A browser extension that brings the **Agonas GitAssign** skill directly into Git
 - 📊 **5-pillar rubric**: Comment quality · Global burden · Repo monopoly · Domain alignment · First-timer boost
 - ✅ **1-click Assign** or **Decline** directly from the popup
 - ⚡ **Injects a Triage button** into the GitHub issue header
+- 💾 **Persistent triage state** across tab switches, with instant reload and background Gemma resumption
+- ↗️ **Detached floating window** mode — keep triage results open side-by-side while browsing across tabs
 - 🌙 **GitHub dark mode** design system — feels native
 
 ---
@@ -98,13 +100,35 @@ extension/
 
 ---
 
+---
+
+## Testing & Cross-Platform Verification
+
+The extension includes automated test suites to ensure parity between JavaScript and the reference Python implementation:
+
+```bash
+# Run using Node's built-in test runner (no dependencies required)
+node --test extension/tests/
+
+# Or run the standalone test script
+node extension/tests/test_scorer.js
+```
+
+### Shared Test Vectors
+All scoring test cases and edge cases are maintained in:
+[`extension/tests/scoring-vectors.json`](tests/scoring-vectors.json)
+
+> **Note for Maintainers:** To prevent logic drift between the extension and the Python skill, the pytest suite (`skill/tests/`) should load and assert against this exact shared `scoring-vectors.json` file.
+
+---
+
 ## Permissions Used
 
 | Permission | Reason |
 |---|---|
 | `activeTab` | Read the current GitHub issue URL |
 | `tabs` | Get the active tab URL on popup open |
-| `storage` | Store credentials in `chrome.storage.sync` |
+| `storage` | Store credentials in `chrome.storage.local` (strictly local to device) |
 | `api.github.com` | Fetch issue/comment/user data |
 | `generativelanguage.googleapis.com` | Gemma scoring API |
 
@@ -112,6 +136,7 @@ extension/
 
 ## Privacy
 
-- Your GitHub PAT and Gemini API key are stored **only in `chrome.storage.sync`** (encrypted, device-synced if you're logged into your browser profile).
+- Your GitHub PAT and Gemini API key are stored **strictly in `chrome.storage.local`** on your device (never sent to external sync or remote servers).
 - No data is sent to any server other than `api.github.com` and `generativelanguage.googleapis.com`.
 - The extension makes no outbound connections except when you explicitly trigger a triage.
+

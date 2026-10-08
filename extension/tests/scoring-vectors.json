@@ -1,0 +1,232 @@
+[
+  {
+    "name": "established_account",
+    "tier": "starter",
+    "metrics": {
+      "global_open_assigned": 2,
+      "repo_open_assigned": 0,
+      "lifetime_merged_prs": 1,
+      "languages": ["python", "javascript", "go"],
+      "public_repos": 10,
+      "account_age_days": 400,
+      "bio": "Open source contributor"
+    },
+    "comment_quality": 10,
+    "domain_alignment": 9,
+    "expected": {
+      "rawScore": 11.12,
+      "score": 10.0,
+      "risk": "Low",
+      "flags": [
+        "First-timer boost +2.0"
+      ]
+    }
+  },
+  {
+    "name": "brand_new_empty_account",
+    "tier": "starter",
+    "metrics": {
+      "global_open_assigned": 1,
+      "repo_open_assigned": 1,
+      "lifetime_merged_prs": 0,
+      "languages": [],
+      "public_repos": 0,
+      "account_age_days": 0,
+      "bio": ""
+    },
+    "comment_quality": 10,
+    "domain_alignment": 10,
+    "expected": {
+      "rawScore": 7.47,
+      "score": 7.5,
+      "risk": "Medium",
+      "flags": [
+        "No public history to verify skills",
+        "New account (under 30 days)",
+        "First-timer boost withheld (new account)"
+      ]
+    }
+  },
+  {
+    "name": "same_repo_monopoly",
+    "tier": "intermediate",
+    "metrics": {
+      "global_open_assigned": 1,
+      "repo_open_assigned": 3,
+      "lifetime_merged_prs": 50,
+      "languages": ["python"],
+      "public_repos": 5,
+      "account_age_days": 500,
+      "bio": "Dev"
+    },
+    "comment_quality": 10,
+    "domain_alignment": 10,
+    "expected": {
+      "rawScore": 4.0,
+      "score": 4.0,
+      "risk": "High",
+      "flags": [
+        "Same-repo monopoly cap (max 4.0)"
+      ]
+    }
+  },
+  {
+    "name": "veteran_on_starter",
+    "tier": "starter",
+    "metrics": {
+      "global_open_assigned": 0,
+      "repo_open_assigned": 0,
+      "lifetime_merged_prs": 11,
+      "languages": ["typescript"],
+      "public_repos": 15,
+      "account_age_days": 800,
+      "bio": "Staff Engineer"
+    },
+    "comment_quality": 8,
+    "domain_alignment": 8,
+    "expected": {
+      "rawScore": 6.94,
+      "score": 6.9,
+      "risk": "Low",
+      "flags": [
+        "Experienced contributor on starter issue -2.0"
+      ]
+    }
+  },
+  {
+    "name": "ordering_clamped_ten_higher_raw",
+    "tier": "starter",
+    "metrics": {
+      "global_open_assigned": 2,
+      "repo_open_assigned": 0,
+      "lifetime_merged_prs": 1,
+      "languages": ["python", "javascript", "go"],
+      "public_repos": 10,
+      "account_age_days": 400,
+      "bio": "Open source contributor"
+    },
+    "comment_quality": 10,
+    "domain_alignment": 9,
+    "expected": {
+      "rawScore": 11.12,
+      "score": 10.0,
+      "risk": "Low",
+      "flags": [
+        "First-timer boost +2.0"
+      ]
+    }
+  },
+  {
+    "name": "ordering_clamped_ten_lower_raw",
+    "tier": "starter",
+    "metrics": {
+      "global_open_assigned": 3,
+      "repo_open_assigned": 0,
+      "lifetime_merged_prs": 1,
+      "languages": ["python"],
+      "public_repos": 2,
+      "account_age_days": 100,
+      "bio": "Dev"
+    },
+    "comment_quality": 10,
+    "domain_alignment": 10,
+    "expected": {
+      "rawScore": 10.35,
+      "score": 10.0,
+      "risk": "Medium",
+      "flags": [
+        "First-timer boost +2.0"
+      ]
+    }
+  },
+  {
+    "name": "tie_higher_history",
+    "tier": "intermediate",
+    "metrics": {
+      "global_open_assigned": 2,
+      "repo_open_assigned": 0,
+      "lifetime_merged_prs": 1,
+      "languages": ["python"],
+      "public_repos": 3,
+      "account_age_days": 200,
+      "bio": "Full-stack developer"
+    },
+    "comment_quality": 8,
+    "domain_alignment": 7,
+    "expected": {
+      "rawScore": 8.06,
+      "score": 8.1,
+      "risk": "Low",
+      "flags": []
+    }
+  },
+  {
+    "name": "tie_lower_history",
+    "tier": "intermediate",
+    "metrics": {
+      "global_open_assigned": 2,
+      "repo_open_assigned": 0,
+      "lifetime_merged_prs": 0,
+      "languages": ["python"],
+      "public_repos": 1,
+      "account_age_days": 10,
+      "bio": ""
+    },
+    "comment_quality": 8,
+    "domain_alignment": 7,
+    "expected": {
+      "rawScore": 8.06,
+      "score": 8.1,
+      "risk": "Medium",
+      "flags": [
+        "New account (under 30 days)"
+      ]
+    }
+  },
+  {
+    "name": "no_history_domain_cap",
+    "tier": "intermediate",
+    "metrics": {
+      "global_open_assigned": 0,
+      "repo_open_assigned": 0,
+      "lifetime_merged_prs": 0,
+      "languages": [],
+      "public_repos": 0,
+      "account_age_days": 100,
+      "bio": ""
+    },
+    "comment_quality": 10,
+    "domain_alignment": 10,
+    "expected": {
+      "rawScore": 9.12,
+      "score": 9.1,
+      "risk": "Medium",
+      "flags": [
+        "No public history to verify skills"
+      ]
+    }
+  },
+  {
+    "name": "unknown_account_age",
+    "tier": "starter",
+    "metrics": {
+      "global_open_assigned": 0,
+      "repo_open_assigned": 0,
+      "lifetime_merged_prs": 0,
+      "languages": ["javascript"],
+      "public_repos": 1,
+      "account_age_days": null,
+      "bio": ""
+    },
+    "comment_quality": 10,
+    "domain_alignment": 10,
+    "expected": {
+      "rawScore": 10.0,
+      "score": 10.0,
+      "risk": "Low",
+      "flags": [
+        "Account age unknown"
+      ]
+    }
+  }
+]

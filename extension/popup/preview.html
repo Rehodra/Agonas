@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Agonas GitAssign - Preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="popup.css" />
+  <style>
+    body {
+      margin: 20px auto;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-brand">
+      <span class="brand-icon">⚡</span>
+      <span class="brand-name">Agonas</span>
+      <span class="brand-sub">GitAssign</span>
+    </div>
+    <div class="header-actions">
+      <div class="auth-dot ok" id="authDot" title="Authenticated as @maintainer"></div>
+      <button class="icon-btn" id="settingsBtn" title="Settings" aria-label="Open settings">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0Zm0 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM8 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Z"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ISSUE BANNER -->
+  <div class="issue-banner" id="issueBanner">
+    <span class="issue-badge" id="issueBadge">Issue #42 · starter · 3 candidates</span>
+    <a class="issue-link" id="issueLink" target="_blank" rel="noopener noreferrer">↗</a>
+  </div>
+
+  <!-- MAIN -->
+  <main id="main">
+    <div id="candidatesContainer">
+      <div id="candidatesList"></div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer" id="footer">
+    <span class="footer-text">Scores via <span class="footer-accent">gemma-4-26b-a4b-it</span> · <a href="https://agentskills.io" target="_blank" rel="noopener" class="footer-link">agentskills.io</a></span>
+    <button class="icon-btn" id="refreshBtn" title="Re-run triage" aria-label="Refresh scores">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+        <path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+        <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+      </svg>
+    </button>
+  </footer>
+
+  <div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
+  <script type="module">
+    import { scoreCandidate, sortCandidates } from "../lib/scorer.js";
+    import { renderCandidates } from "./popup.js";
+
+    // Simulate 3 applicants on a starter issue:
+    // 1. Established dev (rawScore ~11.12, clamped 10/10)
+    // 2. Solid contender (rawScore ~10.75, clamped 10/10 -> near tie with #1, diff < 0.5)
+    // 3. Brand-new empty account (rawScore ~7.47, clamped 7.5/10 with warning flags)
+    const applicants = [
+      {
+        username: "dev_senior_alice",
+        commentQuality: 10,
+        domainAlignment: 9,
+        metrics: {
+          globalOpenAssigned: 2,
+          repoOpenAssigned: 0,
+          lifetimeMergedPrs: 1,
+          languages: ["python", "javascript"],
+          publicRepos: 8,
+          accountAgeDays: 400,
+          bio: "Full-stack developer & open source enthusiast",
+        },
+        justification: "Clear implementation plan with reproducible example and strong language match.",
+      },
+      {
+        username: "bob_contender",
+        commentQuality: 9,
+        domainAlignment: 10,
+        metrics: {
+          globalOpenAssigned: 1,
+          repoOpenAssigned: 0,
+          lifetimeMergedPrs: 2,
+          languages: ["javascript", "typescript"],
+          publicRepos: 5,
+          accountAgeDays: 120,
+          bio: "Frontend engineer",
+        },
+        justification: "Solid proposal addressing edge cases; strong JavaScript background.",
+      },
+      {
+        username: "newbie_created_today",
+        commentQuality: 10,
+        domainAlignment: 10, // Gemma returned 10, but will be capped to 5 by policy
+        metrics: {
+          globalOpenAssigned: 1,
+          repoOpenAssigned: 1,
+          lifetimeMergedPrs: 0,
+          languages: [],
+          publicRepos: 0,
+          accountAgeDays: 0,
+          bio: "",
+        },
+        justification: "Generic offer without repository history or technical evidence.",
+      },
+    ];
+
+    const scoredCandidates = applicants.map(a => {
+      const scored = scoreCandidate({
+        tier: "starter",
+        metrics: a.metrics,
+        commentQuality: a.commentQuality,
+        domainAlignment: a.domainAlignment,
+      });
+      return {
+        ...scored,
+        username: a.username,
+        justification: a.justification,
+      };
+    });
+
+    // Rank by rawScore
+    sortCandidates(scoredCandidates);
+    scoredCandidates.forEach((c, i) => { c.rank = i + 1; });
+
+    renderCandidates({
+      repo: "acme/project",
+      issue: { number: 42, tier: "starter" },
+      candidates: scoredCandidates,
+      engine: "gemma-4-26b-a4b-it",
+    });
+  </script>
+</body>
+</html>

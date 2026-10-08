@@ -28,4 +28,21 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
     sendResponse({ ok: true });
     return false;
   }
+
+  if (msg.type === "OPEN_DETACHED_WINDOW") {
+    if (chrome.windows?.create) {
+      chrome.windows.create({
+        url: chrome.runtime.getURL("popup/popup.html?detached=1"),
+        type: "popup",
+        width: 440,
+        height: 640,
+      }, win => sendResponse({ ok: true, windowId: win?.id }));
+      return true;
+    } else {
+      chrome.tabs.create({ url: chrome.runtime.getURL("popup/popup.html?detached=1") }, tab => {
+        sendResponse({ ok: true, tabId: tab?.id });
+      });
+      return true;
+    }
+  }
 });

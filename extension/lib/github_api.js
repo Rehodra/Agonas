@@ -32,12 +32,14 @@ function setCached(key, value) {
 /**
  * Execute an array of promise-returning tasks with limited concurrency.
  * @param {Array<() => Promise<any>>} tasks
- * @param {number} concurrency
+ * @param {number} concurrency - default 4
+ * @param {Function} [onProgress] - (completed, total) => void
  * @returns {Promise<any[]>}
  */
-export async function runConcurrent(tasks, concurrency = 2) {
+export async function runConcurrent(tasks, concurrency = 4, onProgress = null) {
   const results = new Array(tasks.length);
   let nextIdx = 0;
+  let completed = 0;
 
   async function worker() {
     while (nextIdx < tasks.length) {
@@ -45,7 +47,12 @@ export async function runConcurrent(tasks, concurrency = 2) {
       try {
         results[idx] = await tasks[idx]();
       } catch (err) {
-        results[idx] = { error: err.message };
+        results[idx] = { error: err.message, rateLimited: err.rateLimited };
+      } finally {
+        completed++;
+        if (onProgress) {
+          try { onProgress(completed, tasks.length); } catch (_) {}
+        }
       }
     }
   }
@@ -78,13 +85,15 @@ export class GitHubClient {
    * @param {string} path
    * @param {object} [options]
    * @param {number} [attempt]
+   * @param {AbortSignal} [signal]
    */
-  async request(method, path, options = {}, attempt = 0) {
+  async request(method, path, options = {}, attempt = 0, signal = null) {
     const url = path.startsWith("http") ? path : `${API}${path}`;
     const res = await fetch(url, {
       method,
       headers: { ...this._headers, ...(options.headers ?? {}) },
       body: options.body ? JSON.stringify(options.body) : undefined,
+      signal: signal || options.signal,
     });
 
     const isRateLimited =
@@ -92,7 +101,6 @@ export class GitHubClient {
       (res.status === 403 && res.headers.get("X-RateLimit-Remaining") === "0");
 
     if (isRateLimited || res.status === 403) {
-      // Check for secondary rate limit message
       let bodyText = "";
       try {
         const cloned = res.clone();
@@ -101,26 +109,36 @@ export class GitHubClient {
 
       const isSecondary = bodyText.toLowerCase().includes("secondary rate limit");
 
-      if ((isRateLimited || isSecondary) && attempt < 3) {
+      // Retry at most ONCE on 403/429
+      if ((isRateLimited || isSecondary) && attempt < 1) {
         const waitHeader = res.headers.get("Retry-After") ?? res.headers.get("X-RateLimit-Reset");
-        let delaySec = 2 ** (attempt + 1); // Exponential backoff: 2s, 4s, 8s
+        let delaySec = 2;
         if (waitHeader) {
           const parsed = parseInt(waitHeader, 10);
           if (!isNaN(parsed)) {
             delaySec = parsed > 1000000 ? Math.max(parsed - Math.floor(Date.now() / 1000), 1) : parsed;
           }
         }
-        const delayMs = Math.min(Math.max(delaySec, 2), 60) * 1000;
-        console.warn(`[Agonas] Rate limited on ${path} (${res.status}). Backing off for ${delayMs / 1000}s (attempt ${attempt + 1}/3)...`);
+        // Cap the wait at 20s
+        const delayMs = Math.min(Math.max(delaySec, 1), 20) * 1000;
+        console.warn(`[Agonas] Rate limited on ${path} (${res.status}). Waiting ${delayMs / 1000}s and retrying once...`);
         await new Promise(r => setTimeout(r, delayMs));
-        return this.request(method, path, options, attempt + 1);
+        return this.request(method, path, options, attempt + 1, signal);
+      }
+
+      if (isRateLimited || isSecondary) {
+        const err = new Error(`GitHub rate limit exceeded (${res.status}) on ${path}`);
+        err.rateLimited = true;
+        throw err;
       }
     }
 
     if (!res.ok) {
       let msg = res.statusText;
       try { msg = (await res.json()).message ?? msg; } catch (_) { /* ignore */ }
-      throw new Error(`GitHub ${method} ${path} → ${res.status}: ${msg}`);
+      const err = new Error(`GitHub ${method} ${path} → ${res.status}: ${msg}`);
+      if (res.status === 403 || res.status === 429) err.rateLimited = true;
+      throw err;
     }
 
     return res;
@@ -243,6 +261,9 @@ export class GitHubClient {
  */
 export async function loadGitHubToken() {
   return new Promise(resolve => {
+    if (typeof chrome === "undefined" || !chrome?.storage?.local) {
+      return resolve(null);
+    }
     chrome.storage.local.get(["githubToken"], localRes => {
       if (localRes?.githubToken) {
         return resolve(localRes.githubToken);

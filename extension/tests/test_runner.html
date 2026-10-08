@@ -21,7 +21,7 @@
     async function start() {
       const el = document.getElementById("results");
       try {
-        const res = await fetch("./test-vectors.json");
+        const res = await fetch("./scoring-vectors.json");
         const vectors = await res.json();
         const summary = runTests(vectors);
 
