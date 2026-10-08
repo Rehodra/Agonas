@@ -68,7 +68,8 @@ def test_build_context_filters_maintainers_and_bots():
         {"user": {"login": "alex"}, "body": "working on this now ![s](https://x/y.png)", "author_association": "NONE"},
     ]
     ctx = fic.build_context("o/r", 4, issue, comments)
-    assert [a["username"] for a in ctx["applicants"]] == ["alex"]
+    assert [a["username"] for a in ctx["applicants"]] == ["alex", "chatty"]
+    assert ctx["applicants"][0]["explicit_claim"] is True and ctx["applicants"][1]["explicit_claim"] is False
     assert len(ctx["applicants"][0]["comments"]) == 2
     assert ctx["applicants"][0]["media"] == ["https://x/y.png"]
     assert ctx["filtered_out"] == ["boss", "dependabot[bot]"]
@@ -321,3 +322,19 @@ def test_cap_flag_only_when_cap_changes_score():
     assert not low["breakdown"]["hard_cap_applied"] and "Same-repo monopoly cap (max 4.0)" not in low["flags"]
     high = eg.score_candidate("intermediate", {"repo_open_assigned": 3}, 10, 10)
     assert "Same-repo monopoly cap (max 4.0)" in high["flags"]
+
+
+def test_typo_comment_is_still_an_applicant_but_flagged():
+    comments = [{"user": {"login": "Rehodra"}, "body": "I can doo it in altu faltu way", "author_association": "NONE"}]
+    ctx = fic.build_context("o/r", 4, {"labels": []}, comments)
+    assert [a["username"] for a in ctx["applicants"]] == ["Rehodra"]
+    assert ctx["applicants"][0]["explicit_claim"] is False
+    ev = eg.evaluate(ctx, {"candidates": [{"username": "Rehodra", "comment_quality": 1, "domain_alignment": 1}]}, "t")
+    assert "No explicit claim phrase (check intent)" in ev["candidates"][0]["flags"]
+
+
+def test_prompt_includes_claim_hint_and_zero_for_chatter():
+    ctx = make_ctx()
+    ctx["applicants"][0]["explicit_claim"] = False
+    p = eg.build_prompt(ctx)
+    assert "Explicit claim phrase detected: no" in p and "NO intent" in p

@@ -164,6 +164,8 @@ def evaluate(ctx: dict, judgement: dict, engine: str) -> dict:
                                                 "justification": "Not evaluated by model; scored 0 on subjective pillars."})
         s = score_candidate(tier, a.get("metrics") or {}, j.get("comment_quality", 0), j.get("domain_alignment", 0))
         s.update(username=a["username"], justification=j.get("justification", ""))
+        if a.get("explicit_claim") is False:
+            s["flags"].append("No explicit claim phrase (check intent)")
         results.append(s)
     results.sort(key=lambda r: (-r["score"], r["stats"]["global_open_assigned"], r["username"]))
     for i, r in enumerate(results, 1):

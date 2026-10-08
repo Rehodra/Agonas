@@ -17,6 +17,7 @@ Languages (recent repos): {{ (a.metrics.languages if a.metrics else []) | join("
 Top repos: {% for r in (a.metrics.top_repos if a.metrics else []) %}{{ r.name }} ({{ r.language }}){% if not loop.last %}, {% endif %}{% endfor %}
 
 Bio: {{ (a.metrics.bio if a.metrics else None) or "n/a" }}
+Explicit claim phrase detected: {{ 'yes' if a.explicit_claim else 'no' }}
 Comment(s):
 """
 {{ a.comments | join("\n---\n") | truncate(1500) }}
@@ -24,8 +25,9 @@ Comment(s):
 {% endfor %}
 
 ## Criteria (each an integer 0-10)
-- comment_quality: 8-10 specific proposal, code reference or reproduction; 5-7 polite claim with relevant
-  background; 0-2 generic "assign me".
+- comment_quality: if the comment shows NO intent to work on the issue (question, thanks, +1, chatter), give 0.
+  Otherwise 8-10 specific proposal, code reference or reproduction; 5-7 polite claim with relevant
+  background; 0-2 generic or vague offers (for example a bare "assign me" or "I can do it").
 - domain_alignment: language/framework overlap with the issue. Related ecosystems earn high adjacent credit
   (e.g. a React/JS applicant for a TypeScript issue, if the comment explains how it applies).
 

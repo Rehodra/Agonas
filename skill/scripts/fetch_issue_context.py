@@ -45,14 +45,17 @@ def build_context(repo: str, number: int, issue: dict, comments: list[dict]) -> 
         user = c.get("user") or {}
         login = user.get("login")
         text = c.get("body") or ""
-        if not login or not CLAIM_RE.search(text):
+        if not login or not text.strip():
             continue
         if is_bot(user) or c.get("author_association") in MAINTAINER_ASSOC:
             skipped.append(login)
             continue
-        entry = applicants.setdefault(login, {"username": login, "comments": [], "media": []})
+        # Every human, non-maintainer commenter is a possible applicant: keyword matching alone misses
+        # typos and unusual wording ("I can doo it"). Gemma judges intent; explicit_claim is just a hint.
+        entry = applicants.setdefault(login, {"username": login, "comments": [], "media": [], "explicit_claim": False})
         entry["comments"].append(text.strip())
         entry["media"] += media_urls(text)
+        entry["explicit_claim"] = entry["explicit_claim"] or bool(CLAIM_RE.search(text))
     return {
         "repo": repo,
         "issue": {
