@@ -4,7 +4,7 @@ description: Autonomous GitHub issue triage and contributor assignment assistant
 compatibility: Requires Python 3.10+, network access, GITHUB_TOKEN, and GEMINI_API_KEY.
 license: MIT
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   model: "google/gemma-4"
   standard: "agentskills.io/v1"
 ---
