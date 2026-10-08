@@ -63,7 +63,7 @@ def main():
         print(markdown_table(ev))
     else:
         print_rich(ev)
-    print(f"\nHTML report: {a.html}")
+    print(f"\nHTML report: {Path(a.html).resolve()}")
     if ev["candidates"]:
         print(f"Top match: @{ev['candidates'][0]['username']} - awaiting maintainer approval.")
     if a.open:

@@ -58,7 +58,7 @@ def score_candidate(tier: str, metrics: dict, comment_quality: float, domain_ali
     flags = []
     if g >= 5:
         flags.append("High ghosting risk")
-    if r >= 3:
+    if capped:
         flags.append("Same-repo monopoly cap (max 4.0)")
     if adj > 0:
         flags.append("First-timer boost +2.0")

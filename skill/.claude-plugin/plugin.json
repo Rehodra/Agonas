@@ -1,0 +1,11 @@
+{
+  "name": "agonas",
+  "displayName": "Agonas",
+  "version": "1.0.0",
+  "description": "Triage GitHub issue applicants and assign the best contributor. Scores comment quality and domain fit with Google Gemma, applies anti-hoarding and anti-monopoly rules, and assigns only after maintainer approval.",
+  "author": { "name": "Nano Pineapple" },
+  "homepage": "https://github.com/Rehodra/Agonas",
+  "repository": "https://github.com/Rehodra/Agonas",
+  "license": "MIT",
+  "keywords": ["github", "issues", "triage", "assignment", "maintainers", "gemma", "open-source"]
+}

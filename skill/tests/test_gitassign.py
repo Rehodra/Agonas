@@ -314,3 +314,10 @@ def test_call_gemma_total_failure_exits(monkeypatch):
 
     with pytest.raises(SystemExit):
         eg.call_gemma("p", "a", client=type("C", (), {"models": Models()})(), fallback="b", retries=1)
+
+
+def test_cap_flag_only_when_cap_changes_score():
+    low = eg.score_candidate("starter", {"repo_open_assigned": 3, "lifetime_merged_prs": 50}, 1, 1)
+    assert not low["breakdown"]["hard_cap_applied"] and "Same-repo monopoly cap (max 4.0)" not in low["flags"]
+    high = eg.score_candidate("intermediate", {"repo_open_assigned": 3}, 10, 10)
+    assert "Same-repo monopoly cap (max 4.0)" in high["flags"]

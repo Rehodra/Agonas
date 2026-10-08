@@ -1,5 +1,5 @@
 ---
-name: git-assign
+name: agonas
 description: Autonomous GitHub issue triage and contributor assignment assistant powered by Google Gemma. Evaluates candidate comments, profiles, workload burdens, and local repository monopolies to recommend and assign the best contributor. Use when the user asks to triage an issue, assign contributors, evaluate applicants on GitHub, or manage issue assignments.
 compatibility: Requires Python 3.10+, network access, GITHUB_TOKEN, and GEMINI_API_KEY.
 license: MIT
@@ -12,8 +12,13 @@ metadata:
 # GitAssign
 
 Triage applicants for a GitHub issue and (after maintainer approval) assign the best one.
-Run all commands from the skill directory. Scores are computed deterministically from
+Run all commands from this skill's directory (the folder containing this SKILL.md; when installed as a plugin, resolve it from the skill's base directory). Scores are computed deterministically from
 `references/scoring_rules.md`; Gemma only judges the two subjective pillars.
+
+## Setup (first run only)
+From the skill directory: `pip install -r requirements.txt`, then make sure `GITHUB_TOKEN` and
+`GEMINI_API_KEY` are set (environment variables, a `.env` file in the skill directory, or `~/.agonas/.env`, which survives plugin updates; see `.env.example`).
+Never ask the user to paste keys into chat.
 
 ## Workflow
 

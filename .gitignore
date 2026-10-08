@@ -5,3 +5,4 @@ __pycache__/
 triage-report.html
 context.json
 evaluation.json
+dist/

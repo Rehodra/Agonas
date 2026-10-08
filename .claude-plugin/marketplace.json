@@ -1,0 +1,14 @@
+{
+  "name": "agonas",
+  "description": "Agonas: tools for automating open-source maintainer workflows",
+  "owner": { "name": "Nano Pineapple" },
+  "plugins": [
+    {
+      "name": "agonas",
+      "source": "./skill",
+      "description": "Triage GitHub issue applicants and assign the best contributor, powered by Google Gemma.",
+      "category": "productivity",
+      "keywords": ["github", "issues", "triage", "assignment", "gemma"]
+    }
+  ]
+}

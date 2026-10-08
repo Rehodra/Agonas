@@ -13,7 +13,9 @@ import requests
 try:
     from dotenv import load_dotenv
 
-    load_dotenv()
+    # Skill-local .env first, then a stable per-user file that survives plugin updates.
+    load_dotenv(Path(__file__).resolve().parent.parent / ".env")
+    load_dotenv(Path.home() / ".agonas" / ".env")
 except ImportError:  # dotenv is optional at runtime
     pass
 
